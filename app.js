@@ -100,10 +100,23 @@ class TripService {
     // ici l'exécution du code est asynchrone
     // TODO utiliser resolve et reject en fonction du résultat de la
     //recherche
+        for(let trip of this.trips){
+            if (trip.name === tripName){
+                resolve(trip);
+            }
+
+        }
+        reject("No trip found whith name ${tripName}")
+
     }, 2000)
     });
     }
     }
+const tripSrv = newTripService();
+tripSrv.findByName("Paris")
+    .then(tripFound => console.log(tripFound))
+    .catch(err =>console.log(err))
+
     class PriceService {
     constructor() {
         this.price = new Map();
@@ -117,10 +130,12 @@ class TripService {
     setTimeout( () => {
     // ici l'exécution du code est asynchrone
      // TODO utiliser resolve et reject en fonction du résultat dela recherche
-        if(this.prices.has == (tripId)){
-            resolve(this.prices.get(tripId));
+        const price = this.priceMap.get(tripId);
+
+        if(price){
+            resolve(price);
         }else{
-            reject("No price found for id" + tripId);
+            reject("No price found for id= ${tripId}");
         }
    
     
@@ -128,3 +143,18 @@ class TripService {
     });
     }
     }
+    const priceSrv = new PriceService();
+priceSrv.findPriceById('paris')
+    .then(price => console.log('price =', price))
+    .catch(err => console.log(err));
+priceSrv.findPriceByTripId('nantes')
+    .then(price => console.log('price =', price))
+    .catch(err => console.log(err));
+
+const tripName = 'Toulouse';
+
+
+tripSrv.findByName(tripName)
+    .then(tripFound => priceSrv.findPriceByTripId(tripFound.id))
+    .then(price => console.log('\\o/ price =', price))
+    .catch(err => console.log(err));
